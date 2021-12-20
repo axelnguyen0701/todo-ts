@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@emotion/react";
+import { Todo } from "../../logic/Todo";
 
 const theme = createTheme({
   palette: {
@@ -32,16 +33,30 @@ declare module "@mui/material/Button" {
   }
 }
 
-export default function FormBox() {
+interface FormBoxProps {
+  handleAddTodo: (todo: Todo) => void;
+  lastId: number;
+}
+
+export default function FormBox({
+  handleAddTodo: addTodo,
+  lastId,
+}: FormBoxProps) {
   const [value, setValue] = React.useState("");
+  const [location, setLocation] = React.useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
+  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
+  };
+
   const handleButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    alert(value);
+    addTodo({ id: lastId + 1, text: value, done: false, location });
     setValue("");
+    setLocation("");
   };
 
   return (
@@ -49,16 +64,15 @@ export default function FormBox() {
       id="form-box"
       component="form"
       noValidate
-      sx={{
-        bgcolor: "#b6e6e9",
-        boxShadow: 3,
-        p: 5,
-        mt: 5,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minWidth: "30%",
-      }}
+      bgcolor={"#b6e6e9"}
+      boxShadow={3}
+      px={3}
+      py={2}
+      mt={5}
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"center"}
+      minWidth={{ xs: "75%", md: "30%" }}
     >
       <TextField
         id="todo-content"
@@ -70,16 +84,25 @@ export default function FormBox() {
         onChange={handleInputChange}
         maxRows={4}
       />
-      <ThemeProvider theme={theme}>
-        <Button
-          variant="contained"
-          onClick={handleButtonClick}
-          color="neutral"
-          sx={{ border: 1, maxWidth: 10, alignSelf: "flex-end", mt: 1 }}
-        >
-          Add
-        </Button>
-      </ThemeProvider>
+      <Box display="flex" minWidth={"100%"} justifyContent={"space-between"}>
+        <TextField
+          id="todo-location"
+          placeholder="Location"
+          sx={{ bgcolor: "#DFFBFF", mt: 1, maxWidth: 100 }}
+          value={location}
+          onChange={handleLocationChange}
+        />
+        <ThemeProvider theme={theme}>
+          <Button
+            variant="contained"
+            onClick={handleButtonClick}
+            color="neutral"
+            sx={{ border: 1, my: "auto", height: 40 }}
+          >
+            Add
+          </Button>
+        </ThemeProvider>
+      </Box>
     </Box>
   );
 }

@@ -2,6 +2,7 @@ export type Todo = Readonly<{
   id: number;
   text: string;
   done: boolean;
+  location?: string;
 }>;
 
 type DoneTodo = Todo & {
@@ -28,5 +29,6 @@ export function toggleTodo(todo: Todo): Todo {
     id: todo.id,
     text: todo.text,
     done: !todo.done,
+    location: todo.location,
   };
 }
